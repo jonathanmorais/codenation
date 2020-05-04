@@ -44,3 +44,11 @@ with open('answer.json', 'r+') as f:
     f.seek(0)
     json.dump(data, f, indent=4)
     f.truncate()
+
+headers = {'Content-type': 'multipart/form-data'}
+
+files = {'document': open('answer.json', 'rb')}
+
+r = requests.post('https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=8b76b1b55d6bc6ca010826700d66f5acd457240b', files=files, headers=headers)
+
+print(r.status_code)
