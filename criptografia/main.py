@@ -5,6 +5,8 @@ import string
 import hashlib
 from json import JSONEncoder
 
+alphabet = string.ascii_lowercase
+
 r  = requests.get('https://api.codenation.dev/v1/challenge/dev-ps/generate-data?token=8b76b1b55d6bc6ca010826700d66f5acd457240b')
 
 data = r.json()
@@ -12,30 +14,33 @@ data = r.json()
 with open('answer.json', 'w') as f:
     json.dump(data, f)
 
-value = data['cifrado']
+value = json.dumps((data['cifrado']))
 key = data['numero_casas']
-# decrypted = data['decrifrado']
 
-alphabet = string.ascii_lowercase
+decrypted_message = ""
 
-print(value)
-print(key)
-print("")
 
 for c in value:
     if c in alphabet:
         position = alphabet.find(c)
         new_position = (position - key) % 26
         new_character = alphabet[new_position]
-        del value['cifrado']
-        value += new_character
+        decrypted_message += new_character
     else:
-        value += c
+        decrypted_message += c
 
-print("")
-print(value)
-print("")
+with open('answer.json', 'r+') as f:
+    data = json.load(f)
+    data['decifrado'] = decrypted_message
+    f.seek(0)
+    json.dump(data, f, indent=4)
+    f.truncate()
+     
+resum = hashlib.sha1(value.encode('utf-8')).hexdigest()
 
-result = hashlib.sha1(value.encode())
-
-print(result.hexdigest())
+with open('answer.json', 'r+') as f:
+    data = json.load(f)
+    data['resumo_criptografico'] = resum
+    f.seek(0)
+    json.dump(data, f, indent=4)
+    f.truncate()
