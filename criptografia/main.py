@@ -3,8 +3,6 @@ import json
 import sys
 import string
 import hashlib
-from json import JSONEncoder
-
 
 alphabet = string.ascii_lowercase
 
