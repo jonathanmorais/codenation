@@ -5,6 +5,7 @@ import string
 import hashlib
 from json import JSONEncoder
 
+
 alphabet = string.ascii_lowercase
 
 r  = requests.get('https://api.codenation.dev/v1/challenge/dev-ps/generate-data?token=8b76b1b55d6bc6ca010826700d66f5acd457240b')
@@ -45,10 +46,14 @@ with open('answer.json', 'r+') as f:
     json.dump(data, f, indent=4)
     f.truncate()
 
-headers = {'Content-type': 'multipart/form-data'}
 
-files = {'document': open('answer.json', 'rb')}
+url = 'https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=8b76b1b55d6bc6ca010826700d66f5acd457240b'
 
-r = requests.post('https://api.codenation.dev/v1/challenge/dev-ps/submit-solution?token=8b76b1b55d6bc6ca010826700d66f5acd457240b', files=files, headers=headers)
+files = [
+    ('answer', ('answer.json', open('answer.json', 'rb'), 'json'))
+]
+
+r = requests.post(url=url, files=files)
 
 print(r.status_code)
+print(r.content)
